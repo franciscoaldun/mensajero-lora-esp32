@@ -10,6 +10,7 @@ authors:
     website: "https://franciscoaldunate.cl"
     city: "Talca"
     country: "CL"
+doi: "10.5281/zenodo.23135764"
 repository-code: "https://github.com/franciscoaldun/mensajero-lora-esp32"
 url: "https://franciscoaldunate.cl"
 license: MIT

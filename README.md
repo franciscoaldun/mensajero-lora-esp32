@@ -1,5 +1,7 @@
 # LoRa Messenger: offline chat and photos with ESP32-S3, ESP32-C3 and a PC
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23135764.svg)](https://doi.org/10.5281/zenodo.23135764)
+
 **English** · [Español](README.es.md)
 
 By [Francisco Aldunate](https://franciscoaldunate.cl) · Talca, Chile · October 2026

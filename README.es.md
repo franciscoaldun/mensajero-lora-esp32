@@ -1,5 +1,7 @@
 # Mensajero LoRa: chat y fotos sin internet con ESP32-S3, ESP32-C3 y un PC
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23135764.svg)](https://doi.org/10.5281/zenodo.23135764)
+
 [English](README.md) · **Español**
 
 Por [Francisco Aldunate](https://franciscoaldunate.cl) · Talca, Chile · octubre de 2026
