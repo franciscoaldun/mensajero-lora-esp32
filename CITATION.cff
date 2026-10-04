@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "Mensajero LoRa: offline chat and photos with ESP32-S3, ESP32-C3 and a PC"
+abstract: >-
+  Off-grid messenger over LoRa (DX-LR32 / SX1262, 22 dBm) for emergencies: an ESP32-S3 sealed device, a pocket ESP32-C3 and a PC station serve the same web page over their own Wi-Fi. Reliable delivery with sequence numbers and retries, read receipts, resumable photos, collision backoff, OTA with rollback, simulator and hardware test bench.
+authors:
+  - family-names: "Aldunate Rodríguez"
+    given-names: "Francisco"
+    email: "franciscoaldun@gmail.com"
+    website: "https://franciscoaldunate.cl"
+    city: "Talca"
+    country: "CL"
+repository-code: "https://github.com/franciscoaldun/mensajero-lora-esp32"
+url: "https://franciscoaldunate.cl"
+license: MIT
+version: "1.0"
+date-released: "2026-10-04"
+keywords:
+  - LoRa
+  - ESP32-S3
+  - ESP32-C3
+  - SX1262
+  - off-grid
+  - emergency communication
+  - ESP-IDF
