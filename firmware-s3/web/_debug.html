@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1e1b26">
+<title>Mensajes</title>
+<style>
+:root{--fondo:#1e1b26;--panel:#2a2634;--yo:#7c4dff;--el:#3a3546;--texto:#f2eefa;--tenue:#9a93ab;--bien:#5fd38d;--mal:#ff6b81;--acento:#ff8fb1}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--fondo);color:var(--texto);font:16px/1.4 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif}
+body{display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--panel);padding-top:max(12px,env(safe-area-inset-top))}
+header h1{font-size:18px;margin:0;flex:1}
+#radio{font-size:12px;color:var(--tenue);text-align:right;line-height:1.2}
+#radio.mal{color:var(--mal)}
+#ajustesBtn{background:none;border:0;color:var(--tenue);font-size:20px;padding:4px}
+#lista{flex:1;overflow-y:auto;padding:10px 12px 16px}
+.fila{display:flex;margin:6px 0}
+.fila.ella{justify-content:flex-end}
+.burbuja{max-width:80%;padding:8px 12px;border-radius:16px;word-wrap:break-word;white-space:pre-wrap}
+.ella .burbuja{background:var(--yo);border-bottom-right-radius:4px}
+.el .burbuja{background:var(--el);border-bottom-left-radius:4px}
+.burbuja img{display:block;max-width:100%;border-radius:10px;margin:2px 0}
+.meta{font-size:11px;color:var(--tenue);margin:2px 6px 0}
+.ella .meta{text-align:right}
+.meta .bien{color:var(--bien)} .meta .mal{color:var(--mal)}
+.meta button{background:none;border:1px solid var(--mal);color:var(--mal);border-radius:10px;font-size:11px;padding:1px 8px;margin-left:6px}
+.barra{height:5px;background:#0003;border-radius:3px;overflow:hidden;margin-top:6px;min-width:140px}
+.barra i{display:block;height:100%;background:var(--acento);transition:width .5s}
+.dia{text-align:center;font-size:12px;color:var(--tenue);margin:14px 0 6px}
+#vacio{text-align:center;color:var(--tenue);margin-top:30vh}
+footer{background:var(--panel);padding:8px 10px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
+#caja{display:flex;gap:8px;align-items:flex-end}
+#texto{flex:1;resize:none;max-height:120px;border:1px solid #444;border-radius:20px;background:var(--fondo);color:var(--texto);padding:9px 14px;font:inherit;outline:none}
+#texto:focus{border-color:var(--yo)}
+.redondo{width:42px;height:42px;border-radius:50%;border:0;font-size:20px;flex:none;color:#fff}
+#enviar{background:var(--yo)} #fotoBtn{background:#3a3546}
+#cuenta{font-size:11px;color:var(--tenue);margin:4px 8px 0;display:flex;justify-content:space-between}
+#cuenta.mal{color:var(--mal)}
+.hoja{position:fixed;inset:0;background:#000a;display:none;align-items:flex-end;justify-content:center;z-index:9}
+.hoja.ver{display:flex}
+.hoja>div{background:var(--panel);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px;max-height:92vh;overflow:auto;padding-bottom:max(16px,env(safe-area-inset-bottom))}
+.hoja h2{margin:0 0 10px;font-size:17px}
+#vista{display:block;max-width:100%;max-height:40vh;margin:0 auto 10px;border-radius:10px}
+.opcion{display:flex;justify-content:space-between;align-items:center;width:100%;background:var(--fondo);color:var(--texto);border:1px solid #444;border-radius:12px;padding:12px;margin:6px 0;font:inherit;text-align:left}
+.opcion b{font-weight:600}.opcion span{color:var(--tenue);font-size:13px}
+.boton{width:100%;padding:12px;border:0;border-radius:12px;background:var(--yo);color:#fff;font:inherit;margin-top:8px}
+.boton.gris{background:#3a3546}
+label{display:block;font-size:13px;color:var(--tenue);margin-top:10px}
+input[type=text],input[type=password]{width:100%;padding:10px;border-radius:10px;border:1px solid #444;background:var(--fondo);color:var(--texto);font:inherit}
+input[type=range]{width:100%}
+#info{font-size:12px;color:var(--tenue);white-space:pre-wrap;margin-top:10px}
+#grande{position:fixed;inset:0;background:#000;display:none;align-items:center;justify-content:center;z-index:10}
+#grande img{max-width:100%;max-height:100%}
+#aviso{background:#3a3546;color:var(--texto);font-size:13px;padding:8px 12px;text-align:center}
+#aviso button{background:var(--yo);color:#fff;border:0;border-radius:10px;padding:2px 10px;margin-left:6px}
+.consejo{font-size:11px;color:var(--tenue);text-align:center;margin-top:6px}
+</style>
+</head>
+<body>
+<header>
+  <h1>💜 Mensajes</h1>
+  <div id="radio">conectando…</div>
+  <button id="ajustesBtn" aria-label="ajustes">⚙</button>
+</header>
+<div id="aviso" hidden>Para mandar fotos sin problemas, abre <b>192.168.4.1</b> en Chrome o Safari <button onclick="this.parentNode.hidden=true;localStorage.setItem('avisoVisto','1')">ok</button></div>
+<div id="lista"><div id="vacio">Aquí van a aparecer sus mensajes 💜</div></div>
+<footer>
+  <div id="caja">
+    <button id="fotoBtn" class="redondo" aria-label="mandar foto">📷</button>
+    <textarea id="texto" rows="1" placeholder="Escribe un mensaje…"></textarea>
+    <button id="enviar" class="redondo" aria-label="enviar">➤</button>
+  </div>
+  <div id="cuenta"><span id="cuentaTxt">0 / 180</span><span id="tiempoTxt"></span></div>
+  <input id="archivo" type="file" accept="image/*" hidden>
+</footer>
+
+<div class="hoja" id="hojaFoto"><div>
+  <h2>Mandar foto</h2>
+  <img id="vista" alt="">
+  <div id="opciones">preparando…</div>
+  <button class="boton gris" onclick="cerrar('hojaFoto')">Cancelar</button>
+  <div class="consejo">La radio es lenta pero llega lejos: la foto viaja por partes.</div>
+</div></div>
+
+<div class="hoja" id="hojaAjustes"><div>
+  <h2>Ajustes</h2>
+  <div id="pideClave">
+    <label>Clave de administrador</label>
+    <input id="claveAdmin" type="password" autocomplete="off">
+    <button class="boton" onclick="entrarAjustes()">Entrar</button>
+  </div>
+  <div id="formAjustes" hidden>
+    <label>Nombre de la red Wi-Fi</label><input id="aSsid" type="text" maxlength="32">
+    <label>Clave de la red (8 o más letras; vacía = sin clave)</label><input id="aClave" type="text" maxlength="63">
+    <label>Brillo normal: <b id="vBajo"></b></label><input id="aBajo" type="range" min="0" max="300" step="5">
+    <label>Brillo al llegar un mensaje: <b id="vAlto"></b></label><input id="aAlto" type="range" min="50" max="1000" step="10">
+    <label>Minutos con brillo alto: <b id="vMin"></b></label><input id="aMin" type="range" min="1" max="60">
+    <label><input id="aGirada" type="checkbox"> Pantalla dada vuelta</label>
+    <button class="boton" onclick="guardarAjustes()">Guardar</button>
+    <label>Actualizar el programa (archivo .bin)</label>
+    <input id="aBin" type="file" accept=".bin">
+    <div class="barra" id="barraOta" hidden><i style="width:0"></i></div>
+    <button class="boton gris" onclick="actualizar()">Subir actualización</button>
+    <button class="boton gris" onclick="reiniciar()">Reiniciar</button>
+    <div id="info"></div>
+  </div>
+  <button class="boton gris" onclick="cerrar('hojaAjustes')">Cerrar</button>
+</div></div>
+
+<div id="grande" onclick="this.style.display='none'"><img alt=""></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const MAX = 180, TROZO = 220;
+let msgs = new Map(), maxN = 0, estado = {}, primera = true;
+
+// tiempo en el aire de LoRa SF11/BW125/CR4-8 (igual que en el aparato)
+function aire(b){const n=8*b-44+44,d=36;const s=8+(n>0?Math.ceil(n/d)*8:0);return (12.25+s)*16.384/1000}
+function segFoto(bytes){const t=Math.ceil(bytes/TROZO);return t*(aire(229)+0.25)+aire(13)*2+6}
+function minSeg(s){return s<90?Math.round(s)+' s':'~'+Math.round(s/60)+' min'}
+function hora(ts){if(!ts)return'';const d=new Date(ts*1000),h=new Date();
+  const hh=d.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+  return d.toDateString()==h.toDateString()?hh:d.toLocaleDateString('es-CL',{day:'numeric',month:'short'})+' '+hh}
+function barras(r){if(r>0)return'';const n=r>-90?4:r>-105?3:r>-115?2:r>-125?1:0;return '▂▄▆█'.slice(0,n).padEnd(4,'·')}
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+
+function pintarRadio(){
+  const r=$('#radio');
+  if(!estado.modulo){r.textContent='⚠ sin radio';r.className='mal';return}
+  if(!estado.lora){r.textContent='radio preparándose…';r.className='';return}
+  r.className='';
+  r.innerHTML=(estado.contacto>=0?barras(estado.rssi)+' '+estado.rssi+' dBm<br>señal hace '+(estado.contacto<90?estado.contacto+' s':Math.round(estado.contacto/60)+' min'):'radio lista<br>esperando señal');
+}
+
+// Cada mensaje es un bloque propio: sólo se toca lo que cambió (así las fotos no parpadean
+// y la lista no salta mientras ella lee más arriba).
+const bloques=new Map();let ultimoDia='';
+function htmlCuerpo(m){
+  if(m.tipo!==1)return esc(m.texto);
+  const lista=(m.de===1)||m.estado===3;
+  let c=lista?`<img src="/foto?n=${m.n}" onclick="ver(this.src)" onload="seguirAbajo()">`:'📷 llegando una foto…';
+  if(m.estado===0)c+=`<div class="barra"><i style="width:${m.prog/10}%"></i></div>`;
+  return c;
+}
+function htmlMeta(m){
+  let meta=hora(m.ts);
+  if(m.de===1){
+    if(m.estado===0)meta+=m.tipo===1?` · enviando ${Math.round(m.prog/10)}%`:' · enviando…';
+    else if(m.estado===1)meta+=` · <span class="bien">✓✓ le llegó</span>`;
+    else if(m.estado===2)meta+=` · <span class="mal">✗ no llegó</span><button onclick="reintentar(${m.n})">reintentar</button>`;
+  } else if(m.estado===0&&m.tipo===1)meta+=` · ${Math.round(m.prog/10)}%`;
+  return meta;
+}
+let pegadoAbajo=true;
+function seguirAbajo(){if(pegadoAbajo){const l=$('#lista');l.scrollTop=l.scrollHeight}}
+function pintar(){
+  const l=$('#lista');
+  const orden=[...msgs.values()].sort((a,b)=>a.n-b.n);
+  if(!orden.length)return;
+  if($('#vacio'))$('#vacio').remove();
+  let agregados=false;
+  for(const m of orden){
+    const quien=m.de===1?'ella':'el';
+    // la imagen sólo se crea una vez; después se cambia la barra y el texto de abajo
+    const firmaCuerpo=m.tipo===1?(((m.de===1)||m.estado===3)?'img':'espera')+(m.estado===0?':'+m.prog:''):m.texto;
+    const firmaMeta=m.estado+':'+m.prog+':'+m.ts;
+    let b=bloques.get(m.n);
+    if(!b){
+      if(m.ts){const d=new Date(m.ts*1000).toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long'});
+        if(d!==ultimoDia){ultimoDia=d;const s=document.createElement('div');s.className='dia';s.textContent=d;l.appendChild(s)}}
+      b=document.createElement('div');b.className='fila '+quien;
+      b.innerHTML='<div><div class="burbuja"></div><div class="meta"></div></div>';
+      l.appendChild(b);bloques.set(m.n,b);agregados=true;
+    }
+    const cu=b.querySelector('.burbuja'),me=b.querySelector('.meta');
+    if(b.dataset.fc!==firmaCuerpo){
+      const img=cu.querySelector('img');
+      if(img&&firmaCuerpo.startsWith('img')){const br=cu.querySelector('.barra i');if(br)br.style.width=(m.prog/10)+'%';else if(m.estado!==0){const x=cu.querySelector('.barra');x&&x.remove()}}
+      else cu.innerHTML=htmlCuerpo(m);
+      b.dataset.fc=firmaCuerpo;
+    }
+    if(b.dataset.fm!==firmaMeta){me.innerHTML=htmlMeta(m);b.dataset.fm=firmaMeta}
+  }
+  if(agregados||primera){seguirAbajo();primera=false}
+}
+
+async function sondear(){
+  try{
+    const r=await fetch('/api/estado?desde='+maxN,{cache:'no-store'});
+    const j=await r.json();estado=j;
+    let nuevoDeEl=false;
+    for(const m of j.mensajes){const antes=msgs.get(m.n);if(!antes&&m.de===0&&maxN)nuevoDeEl=true;msgs.set(m.n,m);if(m.n>maxN)maxN=m.n}
+    pintarRadio();pintar();
+    if(nuevoDeEl){navigator.vibrate&&navigator.vibrate([120,80,120]);}
+  }catch(e){$('#radio').textContent='sin conexión con el aparato';$('#radio').className='mal'}
+  const ocupado=[...msgs.values()].some(m=>m.estado===0);
+  setTimeout(sondear,ocupado?1000:2500);
+}
+
+function contar(){
+  const n=new TextEncoder().encode($('#texto').value).length;
+  $('#cuentaTxt').textContent=n+' / '+MAX;
+  $('#cuenta').className=n>MAX?'mal':'';
+  $('#tiempoTxt').textContent=n?'≈ '+aire(n+5).toFixed(1)+' s en el aire':'';
+  const t=$('#texto');t.style.height='auto';t.style.height=Math.min(t.scrollHeight,120)+'px';
+}
+async function enviar(){
+  const t=$('#texto').value.trim();if(!t)return;
+  if(new TextEncoder().encode(t).length>MAX){alert('Muy largo: córtalo en dos mensajes');return}
+  $('#texto').value='';localStorage.removeItem('borrador');contar();
+  await fetch('/api/enviar',{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:t});
+  setTimeout(sondear,200);
+}
+async function reintentar(n){await fetch('/api/reintentar?n='+n,{method:'POST'});setTimeout(sondear,200)}
+function ver(src){const g=$('#grande');g.querySelector('img').src=src;g.style.display='flex'}
+function cerrar(id){$('#'+id).classList.remove('ver')}
+
+// ---- fotos: se achican en el celular antes de mandarlas ----
+const CALIDADES=[{n:'Rápida',lado:220,q:.42,max:5000},{n:'Normal',lado:340,q:.5,max:12000},{n:'Buena',lado:480,q:.6,max:26000}];
+async function cargarImagen(f){
+  try{return await createImageBitmap(f,{imageOrientation:'from-image'})}catch(e){}
+  return await new Promise((ok,mal)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=mal;i.src=URL.createObjectURL(f)});
+}
+async function achicar(img,c){
+  const e=Math.min(1,c.lado/Math.max(img.width,img.height));
+  const cv=document.createElement('canvas');cv.width=Math.round(img.width*e);cv.height=Math.round(img.height*e);
+  cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+  let q=c.q,b;
+  do{b=await new Promise(ok=>cv.toBlob(ok,'image/jpeg',q));q-=.07}while(b.size>c.max&&q>.12);
+  return b;
+}
+$('#fotoBtn').onclick=()=>$('#archivo').click();
+$('#archivo').onchange=async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  $('#hojaFoto').classList.add('ver');$('#opciones').textContent='preparando…';
+  const img=await cargarImagen(f);
+  const versiones=[];for(const c of CALIDADES)versiones.push(await achicar(img,c));
+  $('#vista').src=URL.createObjectURL(versiones[1]);
+  $('#opciones').innerHTML='';
+  versiones.forEach((b,i)=>{
+    const o=document.createElement('button');o.className='opcion';
+    o.innerHTML=`<b>${CALIDADES[i].n}</b><span>${(b.size/1024).toFixed(1)} KB · ${minSeg(segFoto(b.size))}</span>`;
+    o.onmouseenter=()=>$('#vista').src=URL.createObjectURL(b);
+    o.onclick=async()=>{cerrar('hojaFoto');await fetch('/api/foto',{method:'POST',headers:{'Content-Type':'image/jpeg'},body:b});setTimeout(sondear,300)};
+    $('#opciones').appendChild(o);
+  });
+};
+
+// ---- ajustes (con clave de administrador) ----
+let clave=localStorage.getItem('claveAdmin')||'';
+$('#ajustesBtn').onclick=()=>{$('#hojaAjustes').classList.add('ver');if(clave)entrarAjustes(true)};
+async function entrarAjustes(guardada){
+  if(!guardada)clave=$('#claveAdmin').value;
+  const r=await fetch('/api/ajustes',{headers:{'X-Clave':clave}});
+  if(r.status!==200){if(!guardada)alert('Clave incorrecta');localStorage.removeItem('claveAdmin');return}
+  localStorage.setItem('claveAdmin',clave);
+  const a=await r.json();
+  $('#pideClave').hidden=true;$('#formAjustes').hidden=false;
+  $('#aSsid').value=a.ssid;$('#aClave').value=a.clave;$('#aBajo').value=a.bajo;$('#aAlto').value=a.alto;$('#aMin').value=a.min;$('#aGirada').checked=a.girada;
+  for(const k of['Bajo','Alto','Min'])$('#v'+k).textContent=$('#a'+k).value;
+  const h=Math.floor(a.encendida_s/3600),m=Math.floor(a.encendida_s/60)%60;
+  $('#info').textContent=`Versión ${estado.version||''} · partición ${a.particion}\nEncendida ${h} h ${m} min\nGuardado: ${(a.flash_usado/1048576).toFixed(2)} de ${(a.flash_total/1048576).toFixed(1)} MB\nRAM libre ${(a.ram_libre/1024)|0} KB · PSRAM ${(a.psram_libre/1048576).toFixed(1)} MB`;
+}
+for(const k of['Bajo','Alto','Min'])$('#a'+k).oninput=()=>$('#v'+k).textContent=$('#a'+k).value;
+async function guardarAjustes(){
+  const p=new URLSearchParams({ssid:$('#aSsid').value,clave:$('#aClave').value,bajo:$('#aBajo').value,alto:$('#aAlto').value,min:$('#aMin').value,girada:$('#aGirada').checked?'1':'0'});
+  const r=await fetch('/api/ajustes',{method:'POST',headers:{'X-Clave':clave},body:p.toString()});
+  const j=await r.json();alert(j.reinicia?'Guardado. Se reinicia: vuelve a conectarte a la red nueva.':'Guardado');
+}
+function actualizar(){
+  const f=$('#aBin').files[0];if(!f){alert('Elige el archivo .bin');return}
+  if(!confirm('¿Actualizar el programa? Si algo sale mal, vuelve solo a la versión anterior.'))return;
+  const x=new XMLHttpRequest();x.open('POST','/api/ota');x.setRequestHeader('X-Clave',clave);
+  $('#barraOta').hidden=false;
+  x.upload.onprogress=e=>$('#barraOta i').style.width=(100*e.loaded/e.total)+'%';
+  x.onload=()=>{try{const j=JSON.parse(x.responseText);alert(j.ok?'Listo: se está reiniciando con la versión nueva.':'No se actualizó: '+j.motivo)}catch(e){alert('Respuesta rara: '+x.responseText)}};
+  x.onerror=()=>alert('Se cortó la conexión');
+  x.send(f);
+}
+async function reiniciar(){if(confirm('¿Reiniciar?'))await fetch('/api/reiniciar',{method:'POST',headers:{'X-Clave':clave}})}
+
+$('#lista').addEventListener('scroll',()=>{const l=$('#lista');pegadoAbajo=l.scrollHeight-l.scrollTop-l.clientHeight<60});
+// el borrador no se pierde si la página se recarga
+$('#texto').value=localStorage.getItem('borrador')||'';
+$('#texto').addEventListener('input',()=>localStorage.setItem('borrador',$('#texto').value));
+// la ventanita automática del celular (portal) no maneja bien las fotos: se sugiere el navegador
+if(!localStorage.getItem('avisoVisto'))$('#aviso').hidden=false;
+$('#texto').addEventListener('input',contar);
+$('#texto').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!/Mobi/.test(navigator.userAgent)){e.preventDefault();enviar()}});
+$('#enviar').onclick=enviar;
+fetch('/api/hora?t='+Math.floor(Date.now()/1000),{method:'POST'});
+contar();
+sondear();
+</script>
+<script>setTimeout(()=>{const W=document.documentElement.clientWidth;let r=['vw='+W+' sw='+document.documentElement.scrollWidth];
+document.querySelectorAll('*').forEach(e=>{const b=e.getBoundingClientRect();if(b.right>W+1)r.push(e.tagName+'#'+e.id+'.'+e.className+' right='+Math.round(b.right)+' w='+Math.round(b.width))});
+document.body.innerHTML='<pre id=dbg>'+r.slice(0,25).join(' | ')+'</pre>'},3000)</script></body>
+</html>

@@ -1,0 +1,13 @@
+# claves propias: se generan desde secreto.json (ver secreto.example.json)
+secreto.json
+**/main/secreto.h
+# historial y ajustes de cada usuario
+historial*.json
+ajustes_pc.json
+fotos/
+capturas/
+# compilacion
+build/
+managed_components/
+sdkconfig.old
+__pycache__/

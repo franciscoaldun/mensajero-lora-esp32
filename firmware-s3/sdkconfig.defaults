@@ -1,0 +1,37 @@
+CONFIG_IDF_TARGET="esp32s3"
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_ESPTOOLPY_FLASHMODE_QIO=y
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+# PSRAM octal de 8 MB (N16R8)
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_OCT=y
+# 40 MHz: la PSRAM aguanta mejor las caídas de voltaje cuando la radio transmite a 22 dBm
+CONFIG_SPIRAM_SPEED_40M=y
+CONFIG_SPIRAM_USE_MALLOC=y
+CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL=4096
+# Va a quedar sellado: actualizaciones por Wi-Fi con vuelta atrás si la nueva versión no arranca bien
+CONFIG_BOOTLOADER_APP_ROLLBACK_ENABLE=y
+CONFIG_ESP_TASK_WDT_PANIC=y
+# Al empezar a transmitir a 22 dBm el S3 se "congela" un instante (medido: menos de 1,5 s) y vuelve solo;
+# con 300 ms el vigilante de interrupciones lo reiniciaba en cada transmisión. 3 s = margen de sobra.
+CONFIG_ESP_INT_WDT_TIMEOUT_MS=3000
+CONFIG_ESP_TASK_WDT_TIMEOUT_S=20
+CONFIG_ESP_SYSTEM_PANIC_PRINT_REBOOT=y
+CONFIG_ESP_BROWNOUT_DET=y
+# Ahorro: 160 MHz sobra
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_160=y
+CONFIG_FREERTOS_HZ=1000
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
+CONFIG_COMPILER_OPTIMIZATION_PERF=y
+# Portal web
+CONFIG_HTTPD_MAX_REQ_HDR_LEN=1536
+CONFIG_HTTPD_MAX_URI_LEN=512
+CONFIG_LWIP_MAX_SOCKETS=16
+CONFIG_ESP_WIFI_STATIC_RX_BUFFER_NUM=8
+# Consola por el puerto COM (UART0, chip CH343)
+CONFIG_ESP_CONSOLE_UART_DEFAULT=y
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+# El manejo del cable serie en la memoria rápida: así no pierde bytes mientras se graba la flash (en el C3 el
+# LoRa va por ese cable; medido el 03-oct: se perdió una letra mientras el aparato guardaba el historial)
+CONFIG_UART_ISR_IN_IRAM=y

@@ -1,0 +1,26 @@
+CONFIG_IDF_TARGET="esp32c3"
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+# Consola y grabación por el USB-C de la placa (USB Serial/JTAG): así se puede actualizar siempre
+CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+# Vigilantes: una tarea trabada 20 s = reinicio; al transmitir a 22 dBm el chip puede congelarse un instante
+# (medido en el S3: < 1,5 s), por eso el de interrupciones tiene 3 s de margen
+CONFIG_ESP_TASK_WDT_PANIC=y
+CONFIG_ESP_TASK_WDT_TIMEOUT_S=20
+CONFIG_ESP_INT_WDT_TIMEOUT_MS=3000
+CONFIG_ESP_SYSTEM_PANIC_PRINT_REBOOT=y
+CONFIG_ESP_BROWNOUT_DET=y
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_160=y
+CONFIG_FREERTOS_HZ=1000
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
+CONFIG_COMPILER_OPTIMIZATION_SIZE=y
+# Portal web
+CONFIG_HTTPD_MAX_REQ_HDR_LEN=1536
+CONFIG_HTTPD_MAX_URI_LEN=512
+CONFIG_LWIP_MAX_SOCKETS=12
+CONFIG_ESP_WIFI_STATIC_RX_BUFFER_NUM=6
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+# El manejo del cable serie en la memoria rápida: así no pierde bytes mientras se graba la flash (en el C3 el
+# LoRa va por ese cable; medido el 03-oct: se perdió una letra mientras el aparato guardaba el historial)
+CONFIG_UART_ISR_IN_IRAM=y

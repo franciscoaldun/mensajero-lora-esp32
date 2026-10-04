@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffd6e7">
+<title>Mensajes</title>
+<style>
+/* Ella: rosado pastel + celeste Cinnamoroll. Él: celeste eléctrico + verde neón. */
+:root{--fondo:#eef8ff;--fondo2:#fff4f9;--panel:#ffffffd9;--rosa:#ffc6dc;--rosa2:#ff9cc2;--cinna:#bfe6ff;--cinna2:#8fd0ff;
+--electrico:#00b7ff;--neon:#39ff14;--neon-txt:#10b83a;--texto:#3d3552;--tenue:#8d88a3;--mal:#ff4d6d;--sombra:0 2px 10px #8fb7d633;--mio:#ff9cc2}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;color:var(--texto);font:16px/1.4 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif;
+background:linear-gradient(180deg,var(--fondo) 0%,var(--fondo2) 100%)}
+body{display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:10px;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));
+background:linear-gradient(90deg,var(--rosa) 0%,var(--cinna) 100%);box-shadow:var(--sombra)}
+header h1{font-size:18px;margin:0;flex:1;letter-spacing:.2px}
+header h1 small{display:block;font-size:11px;font-weight:500;color:#6b5f80}
+#radio{font-size:11px;color:#6b5f80;text-align:right;line-height:1.25;font-variant-numeric:tabular-nums}
+#radio.mal{color:var(--mal);font-weight:600}
+#ajustesBtn{background:#ffffffaa;border:0;border-radius:50%;width:34px;height:34px;font-size:17px;color:#6b5f80}
+#aviso{background:#fff;color:var(--texto);font-size:13px;padding:7px 12px;text-align:center;border-bottom:1px solid #ffd6e7}
+#aviso button{background:var(--rosa2);color:#fff;border:0;border-radius:10px;padding:2px 10px;margin-left:6px}
+#lista{flex:1;overflow-y:auto;padding:10px 12px 16px;overscroll-behavior:contain}
+.fila{display:flex;margin:5px 0}
+.fila.mia{justify-content:flex-end}
+.burbuja{max-width:78%;padding:8px 12px;border-radius:18px;word-wrap:break-word;white-space:pre-wrap;box-shadow:var(--sombra)}
+.de-ella .burbuja{background:var(--rosa);color:#4b2a3c}
+.de-el .burbuja{background:var(--electrico);color:#fff;border:1.5px solid #7cf7ff}
+.mia .burbuja{border-bottom-right-radius:5px}
+.suya .burbuja{border-bottom-left-radius:5px}
+.burbuja img{display:block;max-width:100%;border-radius:12px;margin:2px 0;min-height:60px;background:#ffffff55}
+.meta{font-size:11px;color:var(--tenue);margin:2px 8px 0}
+.mia .meta{text-align:right}
+.meta .bien{color:var(--neon-txt);font-weight:600} .meta .mal{color:var(--mal);font-weight:600}
+.meta button{background:#fff;border:1px solid var(--mal);color:var(--mal);border-radius:10px;font-size:11px;padding:1px 8px;margin-left:6px}
+.barra{height:6px;background:#ffffff88;border-radius:3px;overflow:hidden;margin-top:6px;min-width:150px}
+.barra i{display:block;height:100%;background:linear-gradient(90deg,var(--rosa2),var(--neon));transition:width .6s}
+.dia{text-align:center;font-size:12px;color:var(--tenue);margin:14px 0 6px}
+.dia span{background:#ffffffcc;padding:2px 10px;border-radius:10px}
+#vacio{text-align:center;color:var(--tenue);margin-top:28vh;font-size:15px}
+#vacio b{font-size:40px;display:block}
+footer{background:var(--panel);backdrop-filter:blur(8px);padding:6px 10px;padding-bottom:max(8px,env(safe-area-inset-bottom));box-shadow:0 -2px 10px #8fb7d622}
+#rapidas{display:flex;gap:6px;overflow-x:auto;padding:2px 0 7px;scrollbar-width:none}
+#rapidas button{flex:none;background:#fff;border:1.5px solid var(--cinna2);color:var(--texto);border-radius:14px;padding:3px 11px;font-size:13px}
+#caja{display:flex;gap:8px;align-items:flex-end}
+#texto{flex:1;resize:none;overflow:hidden;max-height:120px;border:1.5px solid var(--cinna2);border-radius:20px;background:#fff;color:var(--texto);padding:9px 14px;font:inherit;outline:none}
+#texto:focus{border-color:var(--mio)}
+.redondo{width:42px;height:42px;border-radius:50%;border:0;font-size:19px;flex:none;color:#fff;box-shadow:var(--sombra)}
+#enviar{background:var(--mio)} #fotoBtn{background:var(--cinna2)}
+#cuenta{font-size:11px;color:var(--tenue);margin:4px 8px 0;display:flex;justify-content:space-between}
+#cuenta.mal{color:var(--mal)}
+.hoja{position:fixed;inset:0;background:#3d355266;display:none;align-items:flex-end;justify-content:center;z-index:9}
+.hoja.ver{display:flex}
+.hoja>div{background:#fff;width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:16px;max-height:92vh;overflow:auto;padding-bottom:max(16px,env(safe-area-inset-bottom))}
+.hoja h2{margin:0 0 10px;font-size:17px}
+.hoja h3{margin:16px 0 4px;font-size:14px;color:#6b5f80}
+#vista{display:block;max-width:100%;max-height:40vh;margin:0 auto 10px;border-radius:12px}
+.opcion{display:flex;justify-content:space-between;align-items:center;width:100%;background:var(--fondo);color:var(--texto);border:1.5px solid var(--cinna);border-radius:14px;padding:12px;margin:6px 0;font:inherit;text-align:left}
+.opcion b{font-weight:600}.opcion span{color:var(--tenue);font-size:13px}
+.boton{width:100%;padding:12px;border:0;border-radius:14px;background:var(--mio);color:#fff;font:inherit;margin-top:8px}
+.boton.gris{background:#efeaf5;color:var(--texto)}
+.fila2{display:flex;gap:8px}.fila2 .boton{flex:1}
+label{display:block;font-size:13px;color:var(--tenue);margin-top:10px}
+input[type=text],input[type=password]{width:100%;padding:10px;border-radius:12px;border:1.5px solid var(--cinna);background:#fff;color:var(--texto);font:inherit;margin-top:8px}
+input[type=range]{width:100%;accent-color:var(--mio)}
+.info{font-size:12px;color:var(--tenue);white-space:pre-wrap;margin-top:10px;background:var(--fondo);border-radius:12px;padding:8px 10px}
+#grande{position:fixed;inset:0;background:#000d;display:none;align-items:center;justify-content:center;z-index:10}
+#grande img{max-width:100%;max-height:100%}
+.consejo{font-size:11px;color:var(--tenue);text-align:center;margin-top:6px}
+#alcanceDatos{font-variant-numeric:tabular-nums}
+#subtitulo.cerca{color:#1f7a4d}#subtitulo.lejos{color:#b23a55}
+.meta .leido{color:#0a84c9;font-weight:600}
+.encuentros{font-size:12px;color:var(--tenue);margin-top:6px;line-height:1.6}
+.barras{display:inline-flex;align-items:flex-end;gap:2px;height:13px;margin-right:5px;vertical-align:-1px}
+.barras i{width:4px;border-radius:1px;background:#ffffff99}
+.barras i.on{background:var(--neon-txt)}
+#corazon{display:inline-block}
+#corazon.late{animation:latir 1.1s ease-out}
+@keyframes latir{0%{transform:scale(1)}14%{transform:scale(1.45)}28%{transform:scale(1)}42%{transform:scale(1.25)}70%{transform:scale(1)}}
+#panelRadio{background:#ffffffd0;border-bottom:1px solid #ffd6e7;padding:6px 12px;font-size:13px;cursor:pointer;user-select:none}
+#panelRadio .titulo{display:flex;align-items:center;gap:8px;font-weight:600}
+#panelRadio .titulo .mas{margin-left:auto;color:var(--tenue);font-weight:400;font-size:12px;white-space:nowrap}
+#panelRadio.oyen .titulo{color:#1f7a4d}#panelRadio.tibio .titulo{color:#a26b00}#panelRadio.perdidos .titulo{color:#b23a55}#panelRadio.busca .titulo{color:#6b5f80}
+#panelRadio .detalle{display:none;margin-top:6px;line-height:1.6;color:var(--texto);font-variant-numeric:tabular-nums}
+#panelRadio.abierto .detalle{display:block}
+.linea{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.chip{font-size:11px;border-radius:10px;padding:1px 7px;background:#e6f4ff;color:#2f6a94;white-space:nowrap}
+.chip.llega{background:#ffe3ef;color:#a3406f}
+.radar{display:inline-block;flex:none;width:9px;height:9px;border-radius:50%;background:var(--cinna2)}
+.radar.pulsa{animation:radar 1.2s ease-out}
+@keyframes radar{0%{box-shadow:0 0 0 0 #00b7ffcc}100%{box-shadow:0 0 0 16px #00b7ff00}}
+#toast{position:fixed;left:50%;top:76px;transform:translate(-50%,-14px);background:#3d3552ee;color:#fff;padding:8px 14px;border-radius:14px;font-size:14px;opacity:0;pointer-events:none;transition:all .35s;z-index:20;max-width:92vw;text-align:center}
+#toast.ver{opacity:1;transform:translate(-50%,0)}
+#tabsRapidas{display:flex;gap:4px;margin-bottom:3px}
+#tabsRapidas button{border:0;background:transparent;color:var(--tenue);font-size:12px;padding:1px 9px;border-radius:10px}
+#tabsRapidas button.on{background:var(--cinna);color:var(--texto)}
+.pestanas{display:flex;gap:6px;margin:-2px 0 12px}
+.pestanas button{flex:1;border:1.5px solid var(--cinna2);background:#fff;color:var(--texto);border-radius:14px;padding:9px 6px;font:inherit;font-size:14px}
+.pestanas button.on{background:var(--mio);border-color:var(--mio);color:#fff;font-weight:600}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="titulo"><span id="corazon">💗</span> Mensajes<small id="subtitulo"></small></h1>
+  <div id="radio">conectando…</div>
+  <button id="ajustesBtn" aria-label="ajustes">⚙</button>
+</header>
+<div id="panelRadio" class="busca" onclick="this.classList.toggle('abierto');localStorage.setItem('panelAbierto',this.classList.contains('abierto')?'1':'0')">
+  <div class="titulo"><span class="radar" id="radar"></span><span id="prTitulo">conectando…</span><span class="mas">detalles ▾</span></div>
+  <div class="detalle" id="prDetalle"></div>
+</div>
+<div id="toast"></div>
+<div id="aviso" hidden>Para mandar fotos sin problemas, abre <b>192.168.4.1</b> en Chrome o Safari <button onclick="this.parentNode.hidden=true;localStorage.setItem('avisoVisto','1')">ok</button></div>
+<div id="lista"><div id="vacio"><b>💌</b>Aquí van a aparecer sus mensajes</div></div>
+<footer>
+  <div id="tabsRapidas"><button class="on" data-t="frases">frases</button><button data-t="kaomoji">(◕‿◕✿) kaomoji</button><button data-t="emojis">emojis</button></div>
+  <div id="rapidas"></div>
+  <div id="caja">
+    <button id="fotoBtn" class="redondo" aria-label="mandar foto">📷</button>
+    <textarea id="texto" rows="1" placeholder="Escribe un mensaje…"></textarea>
+    <button id="enviar" class="redondo" aria-label="enviar">➤</button>
+  </div>
+  <div id="cuenta"><span id="cuentaTxt">0 / 180</span><span id="tiempoTxt"></span></div>
+  <input id="archivo" type="file" accept="image/*" hidden>
+</footer>
+
+<div class="hoja" id="hojaFoto"><div>
+  <h2>Mandar foto</h2>
+  <img id="vista" alt="">
+  <div id="opciones">preparando…</div>
+  <button class="boton gris" onclick="cerrar('hojaFoto')">Cancelar</button>
+  <div class="consejo">La radio es lenta pero llega lejos: la foto viaja por partes y, si se pierde alguna, se pide de nuevo sola.</div>
+</div></div>
+
+<!-- Ajustes de ESTE aparato (se ajusta a sí mismo) -->
+<div class="hoja" id="hojaAjustes"><div>
+  <div class="pestanas"><button class="on">⚙ Este aparato</button><button onclick="abrirRemoto()">📡 El de <span class="nomOtro">mi amor</span></button></div>
+  <h2>Este aparato</h2>
+  <div id="formAjustes">
+    <h3>Pantallita</h3>
+    <label>Brillo normal: <b id="vBajo"></b></label><input id="aBajo" type="range" min="60" max="1000" step="10">
+    <label>Brillo al llegar un mensaje: <b id="vAlto"></b></label><input id="aAlto" type="range" min="50" max="1000" step="10">
+    <label>Minutos con brillo alto: <b id="vMin"></b></label><input id="aMin" type="range" min="1" max="60">
+    <label><input id="aGirada" type="checkbox"> Pantalla dada vuelta</label>
+    <h3>Radio</h3>
+    <label>Potencia: <b id="vPot"></b> dBm (22 = máximo alcance)</label><input id="aPot" type="range" min="0" max="22">
+    <label>Latido (darse la mano) cada <b id="vLat"></b> min</label><input id="aLat" type="range" min="1" max="3" step="0.5">
+    <label><input id="aTurbo" type="checkbox"> Fotos rápidas cuando la señal sobra (siempre vuelve al máximo alcance)</label>
+    <label>Cómo le dices al otro (sale en la pantallita y en los avisos)</label><input id="aOtro" type="text" maxlength="23">
+    <h3>Encuentros</h3>
+    <div class="info" id="encuentros">todavía nada</div>
+    <h3>Red Wi-Fi</h3>
+    <label>Nombre</label><input id="aSsid" type="text" maxlength="32">
+    <label>Clave (8 o más letras; vacía = sin clave)</label><input id="aClave" type="text" maxlength="63">
+    <button class="boton" onclick="guardarAjustes()">Guardar</button>
+    <h3>Programa</h3>
+    <label>Actualizar (archivo .bin)</label>
+    <input id="aBin" type="file" accept=".bin">
+    <div class="barra" id="barraOta" hidden><i style="width:0"></i></div>
+    <div class="fila2"><button class="boton gris" onclick="actualizar()">Subir actualización</button><button class="boton gris" onclick="reiniciar()">Reiniciar</button></div>
+    <button class="boton gris" onclick="if(confirm('¿Borrar TODOS los mensajes y fotos del aparato? No se puede deshacer.'))fetch('/api/borrar',{method:'POST',headers:{'X-Clave':clave}}).then(()=>location.reload())">Borrar historial</button>
+    <div class="info" id="info"></div>
+  </div>
+  <button class="boton gris" onclick="cerrar('hojaAjustes')">Cerrar</button>
+</div></div>
+
+<!-- Ajustes del OTRO aparato (por radio) -->
+<div class="hoja" id="hojaPc"><div>
+  <div class="pestanas"><button id="tabLocal" onclick="abrirLocal()">⚙ Este aparato</button><button class="on">📡 El de <span class="nomOtro">mi amor</span></button></div>
+  <h2>El de <span class="nomOtro">mi amor</span> (por radio)</h2>
+  <div class="fila2"><button class="boton" onclick="aparato('estado')">Ver estado</button><button class="boton gris" onclick="aparato('girar')">Girar pantalla</button></div>
+  <div class="fila2"><button class="boton gris" onclick="ponerHora()">🕒 Su hora = la mía</button><button class="boton gris" onclick="aparato('colores')">Colores al revés</button></div>
+  <h3>Avisos aquí (en este celular o PC)</h3>
+  <label><input id="pSonido" type="checkbox" onchange="sonido=this.checked;localStorage.setItem('sonido',sonido?'1':'0');if(sonido)sonar('mensaje')"> Sonido al llegar mensajes, al encontrarse y al perderse</label>
+  <label><input id="pSonidoLatido" type="checkbox" onchange="localStorage.setItem('sonidoLatido',this.checked?'1':'0')"> Sonido suave con cada latido de ella</label>
+  <button class="boton gris" onclick="pedirAvisos()">🔔 Activar avisos de Windows (aunque la ventana esté minimizada)</button>
+  <h3>Pantallita</h3>
+  <label>Brillo normal: <b id="pvBajo">220</b></label><input id="pBajo" type="range" min="60" max="1000" step="10" value="220">
+  <label>Brillo al llegar un mensaje: <b id="pvAlto">1000</b></label><input id="pAlto" type="range" min="50" max="1000" step="10" value="1000">
+  <label>Minutos con brillo alto: <b id="pvMin">10</b></label><input id="pMin" type="range" min="1" max="60" value="10">
+  <button class="boton gris" onclick="aplicarBrillo()">Aplicar en su pantallita</button>
+  <h3>Radio de su aparato</h3>
+  <label>Potencia: <b id="pvPot">22</b> dBm (22 = máximo alcance)</label><input id="pPot" type="range" min="0" max="22" value="22">
+  <button class="boton gris" onclick="aparato('potencia '+$('#pPot').value)">Aplicar potencia</button>
+  <label>Canal: fijo en el 38 (906,15 MHz), así nunca quedan en canales distintos</label>
+  <h3>Latido y fotos (para los dos)</h3>
+  <label>Darse la mano cada <b id="pvLat">2.5</b> min (más seguido = se enteran antes; gasta un poco más)</label>
+  <input id="pLat" type="range" min="1" max="3" step="0.5" value="2.5">
+  <label><input id="pTurbo" type="checkbox" checked> Fotos rápidas cuando la señal sobra</label>
+  <button class="boton gris" onclick="aplicarLatido()">Aplicar en los dos aparatos</button>
+  <h3>Nombres</h3>
+  <div class="fila2"><input id="pOtro" type="text" placeholder="cómo se llama ella (acá)"><input id="pYo" type="text" placeholder="cómo te llamas tú (allá)"></div>
+  <button class="boton gris" onclick="aplicarNombres()">Guardar nombres</button>
+  <h3>Encuentros</h3>
+  <div class="info" id="encuentrosPc">todavía nada</div>
+  <h3>Red Wi-Fi de su aparato</h3>
+  <div class="fila2"><input id="pSsid" type="text" placeholder="nombre"><input id="pClave" type="text" placeholder="clave (8+)"></div>
+  <button class="boton gris" onclick="if(pSsid.value)aparato('wifi '+pSsid.value+';'+pClave.value)">Cambiar (se usa al reiniciar)</button>
+  <h3>Prueba de alcance</h3>
+  <div class="info" id="alcanceDatos">Manda un ping cada 3 s y mide la señal en los dos sentidos.</div>
+  <button class="boton" id="alcanceBtn" onclick="alternarAlcance()">Empezar prueba</button>
+  <h3>Respuestas del aparato</h3>
+  <div class="info" id="respuestas">—</div>
+  <div class="fila2"><input id="pCmd" type="text" placeholder="comando a mano (ayuda)"><button class="boton gris" style="flex:0 0 90px" onclick="if(pCmd.value){aparato(pCmd.value);pCmd.value=''}">Mandar</button></div>
+  <div class="fila2"><button class="boton gris" onclick="if(confirm('¿Reiniciar el aparato de ella?'))aparato('reiniciar')">Reiniciar su aparato</button>
+  <button class="boton gris" onclick="if(confirm('¿Borrar TODOS los mensajes y fotos del aparato de ella? No se puede deshacer.'))aparato('borrar historial')">Borrar su historial</button></div>
+  <button class="boton gris" onclick="cerrar('hojaPc')">Cerrar</button>
+</div></div>
+
+<div id="grande" onclick="this.style.display='none'"><img alt=""></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const MAX = 180, TROZO = 220;
+let msgs = new Map(), maxN = 0, estado = {}, primera = true, yo = null, modo = null;
+
+const NIVELES=[[11,125000,4],[11,250000,1],[11,500000,1],[8,250000,1]];
+function aire(b,nv=0){const[sf,bw,cr]=NIVELES[nv];const ts=(1<<sf)/bw,de=ts>=0.016?1:0;
+  const n=8*b-4*sf+28+16,d=4*(sf-2*de);const s=8+(n>0?Math.ceil(n/d)*(cr+4):0);let t=(12.25+s)*ts;if(nv>0)t+=b*10/9600+0.06;return t}
+function segFoto(bytes,nv=0){const t=Math.ceil(bytes/TROZO);return t*(aire(229,nv)+0.25)+Math.floor(t/4)*(2*aire(12,nv)+0.6)+aire(19,nv)*2+6}
+// distancia aproximada por la señal (exponente 3); sólo orienta: puede equivocarse al doble o a la mitad
+function distancia(rssi,pot=22){if(rssi>0)return'';const d=Math.pow(10,((pot+4-31.6)-rssi)/30);
+  if(d<200)return'~'+Math.round(d/10)*10+' m';if(d<1000)return'~'+Math.round(d/100)*100+' m';return'~'+(d/1000).toFixed(1).replace('.',',')+' km'}
+function haceTxt(s){if(s<0)return'';if(s<90)return s+' s';if(s<5400)return Math.round(s/60)+' min';return Math.round(s/3600)+' h'}
+function minSeg(s){return s<90?Math.round(s)+' s':'~'+Math.round(s/60)+' min'}
+function hora(ts){if(!ts)return'';const d=new Date(ts*1000),h=new Date();
+  const hh=d.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+  return d.toDateString()==h.toDateString()?hh:d.toLocaleDateString('es-CL',{day:'numeric',month:'short'})+' '+hh}
+function barras(r){if(r>0)return'';const n=r>-90?4:r>-105?3:r>-115?2:r>-125?1:0;
+  let h='<span class="barras">';for(let i=0;i<4;i++)h+=`<i style="height:${4+i*3}px"${i<n?' class="on"':''}></i>`;return h+'</span>'}
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+
+function configurarLado(){
+  // el mismo archivo sirve en el aparato (ella) y en el PC (él)
+  const esElla = yo===1;
+  document.documentElement.style.setProperty('--mio', esElla?'var(--rosa2)':'var(--electrico)');
+  document.querySelector('meta[name=theme-color]').content = esElla?'#ffd6e7':'#bfe6ff';
+  RAPIDAS.frases = esElla
+    ? ['💗','te amo','te extraño 🥺','¿hablamos?','buenas noches 🌙','buenos días ☀','¿dónde estás?','estoy bien 😊','llegué 🏠','ven pronto 🥺','te amo mucho 💕','eres mi todo 💖','😘','🥰']
+    : ['💙','te amo','te extraño','¿cómo estás?','buenas noches 🌙','buenos días ☀','¿dónde estás?','ya voy 🚗','llegué 🏠','te amo mucho 💕','eres mi todo 💖','te cuido 🤗','😘','🥰'];
+  mostrarRapidas(localStorage.getItem('pestana')||'frases');
+  document.querySelectorAll('#tabsRapidas button').forEach(b=>b.onclick=()=>mostrarRapidas(b.dataset.t));
+  const ps=$('#pSonido');if(ps)ps.checked=sonido;
+  const pl=$('#pSonidoLatido');if(pl)pl.checked=localStorage.getItem('sonidoLatido')==='1';
+  if(localStorage.getItem('panelAbierto')==='1')$('#panelRadio').classList.add('abierto');
+  if(modo!=='pc'&&!localStorage.getItem('avisoVisto'))$('#aviso').hidden=false;
+}
+
+// ---------- frases, kaomoji y emojis
+const RAPIDAS={frases:[],
+  kaomoji:['(｡♥‿♥｡)','ʕ•ᴥ•ʔ','(◕‿◕✿)','(≧◡≦) ♡','ヽ(♡‿♡)ノ','(づ｡◕‿‿◕｡)づ','(˘³˘)♥','(´｡• ᵕ •｡`) ♡','(*^‿^*)','(^_−)☆',
+           '(っ˘ω˘ς)','(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧','♡( ◡‿◡ )','(✿◠‿◠)','(=^･ω･^=)','ʕっ•ᴥ•ʔっ','(つ≧▽≦)つ','(¬‿¬)','(>_<)','(╥﹏╥)'],
+  emojis:['💗','💙','💕','💖','💞','💘','🥰','😘','😍','🥺','🤗','😊','😂','😭','😴','🙈','🫶','🌸','🌷','🌹','🌙','⭐','✨','🐱','🐶','🐰','🍓','☕','🏠','🚗']};
+function mostrarRapidas(t){
+  localStorage.setItem('pestana',t);
+  document.querySelectorAll('#tabsRapidas button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  $('#rapidas').innerHTML='';
+  for(const r of RAPIDAS[t]||[]){const b=document.createElement('button');b.textContent=r;b.onclick=()=>enviarTexto(r);$('#rapidas').appendChild(b)}
+}
+// ---------- sonidos (suaves, hechos aquí mismo) y avisos
+let sonido=localStorage.getItem('sonido')!=='0';
+function tono(f,d,cuando=0,vol=.08){try{const c=tono.c||(tono.c=new(window.AudioContext||window.webkitAudioContext)());
+  const o=c.createOscillator(),g=c.createGain(),t=c.currentTime+cuando;o.type='sine';o.frequency.value=f;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  o.connect(g).connect(c.destination);o.start(t);o.stop(t+d+.05)}catch(e){}}
+const SONIDOS={mensaje:()=>{tono(880,.18);tono(1320,.28,.16)},cerca:()=>{tono(660,.15);tono(880,.15,.15);tono(1175,.35,.3)},
+  lejos:()=>{tono(440,.3);tono(330,.45,.28)},latido:()=>{tono(330,.09,0,.05);tono(330,.09,.17,.05)}};
+function sonar(k){if(sonido&&SONIDOS[k])SONIDOS[k]()}
+function toast(txt,color){const t=$('#toast');t.textContent=txt;t.style.background=color||'';t.classList.add('ver');
+  clearTimeout(toast.k);toast.k=setTimeout(()=>t.classList.remove('ver'),4500)}
+function pedirAvisos(){if(!window.Notification){toast('este navegador no tiene avisos');return}
+  Notification.requestPermission().then(p=>toast(p==='granted'?'🔔 avisos activados':'los avisos quedaron bloqueados'))}
+function ponerHora(){fetch('/api/hora',{method:'POST'});toast('🕒 poniendo su hora igual a la del PC…')}
+function latirCorazon(){const c=$('#corazon');c.classList.remove('late');void c.offsetWidth;c.classList.add('late')}
+function pulsoRadar(){const r=$('#radar');r.classList.remove('pulsa');void r.offsetWidth;r.classList.add('pulsa')}
+// ---------- ¿nos escuchamos? (latidos, señal, distancia, potencia)
+let ultimoLatidoVisto=0;
+function pintarPanelRadio(){
+  const p=$('#panelRadio');if(!p)return;
+  const pr=estado.presencia||{},rp=estado.radio_pc,lat=estado.latidos||[],nom=estado.otro||'mi amor',ahora=Date.now()/1000;
+  for(const l of lat){if(l.t>ultimoLatidoVisto&&ultimoLatidoVisto){
+    if(l.dir==='llega'){latirCorazon();if(localStorage.getItem('sonidoLatido')==='1')sonar('latido')}else pulsoRadar()}}
+  if(lat.length)ultimoLatidoVisto=Math.max(ultimoLatidoVisto,...lat.map(l=>l.t));
+  let cls,tit;const periodo=pr.periodo||150;
+  if(!pr.hubo){cls='busca';tit=`🔎 buscando a ${nom}… (latido cada 20 s hasta encontrarse)`}
+  else if(pr.cerca&&pr.visto_hace<periodo+30){cls='oyen';tit=`💚 se escuchan · última señal hace ${haceTxt(pr.visto_hace)} · ${distancia(pr.rssi,pr.potencia_otro)}`}
+  else if(pr.cerca){cls='tibio';tit=`💛 la última señal de ${nom} fue hace ${haceTxt(pr.visto_hace)}`}
+  else{cls='perdidos';tit=`💔 sin señal desde ${hora(pr.visto_ts)||'hace '+haceTxt(pr.visto_hace)} · buscándose cada 20 s`}
+  p.className=cls+(p.classList.contains('abierto')?' abierto':'');
+  $('#prTitulo').textContent=tit;
+  const sale=[...lat].reverse().find(l=>l.dir==='sale'),llega=[...lat].reverse().find(l=>l.dir==='llega');
+  const d=[];
+  if(pr.hubo){
+    d.push(`📶 <b>tú la oyes</b> a ${pr.rssi<=0?pr.rssi+' dBm '+barras(pr.rssi):'—'}${pr.cerca?' · '+distancia(pr.rssi,pr.potencia_otro):''}`);
+    d.push(`📡 <b>ella te oye</b> a ${pr.alla!==127&&pr.alla!==undefined?pr.alla+' dBm '+barras(pr.alla):'(todavía no lo dice)'}`);
+  }
+  d.push(`💓 <b>su último latido</b>: ${llega?'hace '+haceTxt(Math.round(ahora-llega.t))+(llega.rssi?' · '+llega.rssi+' dBm':''):pr.hubo?'señal hace '+haceTxt(pr.visto_hace):'todavía ninguno'}`);
+  if(sale)d.push(`📤 <b>tu último latido</b>: hace ${haceTxt(Math.round(ahora-sale.t))} · se mandan cada ${pr.cerca?(periodo/60).toString().replace('.',',')+' min':'20 s (buscándola)'}`);
+  d.push(`⚡ <b>potencia</b>: ella ${pr.potencia_otro||22} dBm · tú ${rp?rp.potencia:22} dBm${pr.nivel>0?' · ⚡ turbo nivel '+pr.nivel:''}`);
+  if(rp)d.push(`🧮 desde que se abrió la app: ${rp.salen} latidos mandados · ${rp.llegan} recibidos`);
+  const ult=lat.slice(-14).reverse().map(l=>`<span class="chip ${l.dir}">${l.dir==='llega'?'↓ ella':'↑ tú'} ${new Date(l.t*1000).toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}${l.rssi?' '+l.rssi:''}</span>`).join('');
+  $('#prDetalle').innerHTML=d.join('<br>')+(ult?`<div class="linea">${ult}</div>`:'');
+}
+
+let presenciaAntes=null;
+function pintarPresencia(){
+  const pr=estado.presencia,nom=estado.otro||'mi amor',cor=yo===1?'💙':'💗',s=$('#subtitulo');
+  if(!pr||!pr.hubo){s.textContent='esperando la primera señal de '+nom+'…';s.className='';return}
+  if(pr.cerca){s.textContent=`${cor} ${nom} está cerca · ${distancia(pr.rssi,pr.potencia_otro)} · señal hace ${haceTxt(pr.visto_hace)}`;s.className='cerca'}
+  else{s.textContent=`sin señal de ${nom} desde ${hora(pr.visto_ts)||'hace '+haceTxt(pr.visto_hace)} · estaba a ${distancia(pr.rssi_visto,pr.potencia_otro)}`;s.className='lejos'}
+  if(presenciaAntes===true&&!pr.cerca){
+    sonar('lejos');toast(`💔 se perdió la señal de ${nom} · se están buscando cada 20 s`,'#b23a55ee');
+    if(window.Notification&&Notification.permission==='granted')new Notification(`💔 se perdió la señal de ${nom}`,{body:'se están buscando cada 20 s'});
+  }
+  if(presenciaAntes!==null&&!presenciaAntes&&pr.cerca){
+    sonar('cerca');toast(`${cor} ¡${nom} está cerca! · ${distancia(pr.rssi,pr.potencia_otro)}`,'#1f7a4dee');
+    if(navigator.vibrate)navigator.vibrate([200,100,200,100,200]);
+    if(window.Notification&&Notification.permission==='granted')new Notification(`${cor} ¡${nom} está cerca!`,{body:distancia(pr.rssi,pr.potencia_otro)});
+  }
+  presenciaAntes=pr.cerca;
+  const ev=(pr.eventos||[]).slice(-8).reverse().map(e=>(e.encuentro?'🟢 volvió la señal ':'⚪ se perdió la señal ')+(hora(e.ts)||'')+' · '+distancia(e.rssi,pr.potencia_otro)).join('\n');
+  for(const id of['#encuentros','#encuentrosPc']){const x=$(id);if(x)x.textContent=ev||'todavía nada'}
+}
+function pintarRadio(){
+  const r=$('#radio');
+  if(!estado.modulo){r.textContent=modo==='pc'?'⚠ enchufa el módulo LoRa':'⚠ sin radio';r.className='mal';return}
+  if(!estado.lora){r.textContent='radio preparándose…';r.className='';return}
+  r.className='';
+  r.innerHTML=(estado.contacto>=0?barras(estado.rssi)+' '+estado.rssi+' dBm<br>señal hace '+(estado.contacto<90?estado.contacto+' s':Math.round(estado.contacto/60)+' min'):'radio lista<br>esperando señal');
+}
+
+// Cada mensaje es un bloque propio: sólo se toca lo que cambió (sin parpadeo ni saltos).
+const bloques=new Map();let ultimoDia='';
+function htmlCuerpo(m){
+  if(m.tipo!==1)return esc(m.texto);
+  const lista=(m.de===yo)||m.estado===3;
+  let c=lista?`<img src="/foto?n=${m.n}" onclick="ver(this.src)" onload="seguirAbajo()">`:
+    (m.estado===2?(m.prog>0?`📷 foto a medias (${Math.round(m.prog/10)}%): sigue sola cuando vuelva la señal`:'📷 una foto que no alcanzó a llegar: se reintenta sola'):'📷 llegando una foto…');
+  if(m.estado===0)c+=`<div class="barra"><i style="width:${m.prog/10}%"></i></div>`;
+  return c;
+}
+function htmlMeta(m){
+  let meta=hora(m.ts);
+  if(m.llegada&&m.ts&&m.llegada-m.ts>120)meta=(m.de===yo?'escrito ':'lo escribió ')+hora(m.ts)+' · '+(m.de===yo?'llegó ':'llegó ')+hora(m.llegada);
+  if(m.de===yo){
+    if(m.estado===0)meta+=m.tipo===1?` · enviando ${Math.round(m.prog/10)}%`:' · enviando…';
+    else if(m.estado===1&&m.leido)meta+=` · <span class="leido">👀 leído</span>`;
+    else if(m.estado===1)meta+=` · <span class="bien">✓✓ le llegó</span>`;
+    else if(m.estado===2)meta+=` · <span class="mal">✗ todavía no le llega</span> · se reintenta solo cuando haya señal`+(m.intentos>0&&m.intentos<255?` (${m.intentos})`:'')+`<button onclick="reintentar(${m.n})">ahora</button>`;
+  } else if(m.estado===0&&m.tipo===1)meta+=` · ${Math.round(m.prog/10)}%`;
+  return meta;
+}
+let pegadoAbajo=true;
+function seguirAbajo(){if(pegadoAbajo){const l=$('#lista');l.scrollTop=l.scrollHeight}}
+function pintar(){
+  const l=$('#lista');
+  const orden=[...msgs.values()].sort((a,b)=>a.n-b.n);
+  if(!orden.length)return;
+  if($('#vacio'))$('#vacio').remove();
+  let agregados=false;
+  for(const m of orden){
+    const lado=(m.de===yo?'mia':'suya')+' '+(m.de===1?'de-ella':'de-el');
+    const firmaCuerpo=m.tipo===1?(((m.de===yo)||m.estado===3)?'img':'espera')+(m.estado===0?':'+m.prog:''):m.texto;
+    const firmaMeta=m.estado+':'+m.prog+':'+m.ts+':'+(m.leido||0)+':'+(m.intentos||0)+':'+(m.llegada||0);
+    let b=bloques.get(m.n);
+    if(!b){
+      if(m.ts){const d=new Date(m.ts*1000).toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long'});
+        if(d!==ultimoDia){ultimoDia=d;const s=document.createElement('div');s.className='dia';s.innerHTML='<span></span>';s.firstChild.textContent=d;l.appendChild(s)}}
+      b=document.createElement('div');b.className='fila '+lado;
+      b.innerHTML='<div><div class="burbuja"></div><div class="meta"></div></div>';
+      l.appendChild(b);bloques.set(m.n,b);agregados=true;
+    }
+    const cu=b.querySelector('.burbuja'),me=b.querySelector('.meta');
+    if(b.dataset.fc!==firmaCuerpo){
+      const img=cu.querySelector('img');
+      if(img&&firmaCuerpo.startsWith('img')){const br=cu.querySelector('.barra i');if(br)br.style.width=(m.prog/10)+'%';else if(m.estado!==0){const x=cu.querySelector('.barra');x&&x.remove()}}
+      else cu.innerHTML=htmlCuerpo(m);
+      b.dataset.fc=firmaCuerpo;
+    }
+    if(b.dataset.fm!==firmaMeta){me.innerHTML=htmlMeta(m);b.dataset.fm=firmaMeta}
+  }
+  if(agregados||primera){seguirAbajo();primera=false}
+}
+
+function avisarLlegada(m){
+  sonar('mensaje');toast('💌 '+(m.tipo===1?'te mandó una foto':m.texto));
+  if(navigator.vibrate)navigator.vibrate([120,80,120]);
+  if(document.hidden&&window.Notification&&Notification.permission==='granted')
+    new Notification('💌 Mensaje nuevo',{body:m.tipo===1?'📷 una foto':m.texto});
+  let k=0;const t0='Mensajes';const iv=setInterval(()=>{document.title=(k++%2)?t0:'💌 nuevo';if(k>9){clearInterval(iv);document.title=t0}},700);
+}
+
+async function sondear(){
+  try{
+    const r=await fetch('/api/estado?desde='+maxN,{cache:'no-store'});
+    const j=await r.json();estado=j;
+    if(yo===null){yo=(j.yo===undefined?1:j.yo);modo=j.modo||'aparato';configurarLado()}
+    for(const m of j.mensajes){
+      const antes=msgs.get(m.n);
+      const listo=x=>x&&(x.tipo===0||x.estado===3);
+      if(maxN&&m.de!==yo&&listo(m)&&!listo(antes))avisarLlegada(m);
+      if(antes&&m.de===yo){
+        const que=m.tipo===1?'tu foto':'“'+m.texto.slice(0,30)+'”';
+        if(m.leido&&!antes.leido)toast('👀 leyó '+que);
+        else if(m.estado===1&&antes.estado!==1)toast('✓✓ le llegó '+que);
+        else if(m.estado===2&&antes.estado===0)toast('✗ todavía no le llega '+que+' · se reintenta solo','#b23a55ee');
+      }
+      msgs.set(m.n,m);if(m.n>maxN)maxN=m.n;
+    }
+    pintarRadio();pintarPresencia();pintarPanelRadio();pintar();pintarPc();
+    marcarLeido();
+  }catch(e){$('#radio').textContent='sin conexión con el aparato';$('#radio').className='mal'}
+  const ocupado=[...msgs.values()].some(m=>m.estado===0);
+  setTimeout(sondear,ocupado||estado.alcance?1000:2500);
+}
+
+let leidoHasta=0;
+function marcarLeido(){
+  if(document.visibilityState!=='visible'||(document.hasFocus&&!document.hasFocus()))return;
+  let n=0;for(const m of msgs.values())if(m.de!==yo&&m.estado===3&&!m.leido&&m.n>n)n=m.n;
+  if(n&&n>leidoHasta){leidoHasta=n;fetch('/api/leido?hasta='+n,{method:'POST'})}
+}
+document.addEventListener('visibilitychange',marcarLeido);window.addEventListener('focus',marcarLeido);
+function contar(){
+  const n=new TextEncoder().encode($('#texto').value).length;
+  $('#cuentaTxt').textContent=n+' / '+MAX;
+  $('#cuenta').className=n>MAX?'mal':'';
+  $('#tiempoTxt').textContent=n?'≈ '+aire(n+5).toFixed(1)+' s en el aire':'';
+  const t=$('#texto');t.style.height='';if(t.value)t.style.height=Math.min(t.scrollHeight+3,120)+'px';
+}
+async function enviarTexto(t){
+  if(new TextEncoder().encode(t).length>MAX){alert('Muy largo: córtalo en dos mensajes');return false}
+  pegadoAbajo=true;
+  await fetch('/api/enviar',{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:t});
+  setTimeout(sondear,150);return true;
+}
+async function enviar(){
+  const t=$('#texto').value.trim();if(!t)return;
+  if(await enviarTexto(t)){$('#texto').value='';localStorage.removeItem('borrador');contar()}
+}
+async function reintentar(n){await fetch('/api/reintentar?n='+n,{method:'POST'});setTimeout(sondear,200)}
+function ver(src){const g=$('#grande');g.querySelector('img').src=src;g.style.display='flex'}
+function cerrar(id){$('#'+id).classList.remove('ver')}
+
+// ---- fotos: se achican antes de mandarlas ----
+const CALIDADES=[{n:'Rápida',lado:220,q:.42,max:5000},{n:'Normal',lado:340,q:.5,max:12000},{n:'Buena',lado:480,q:.6,max:26000}];
+async function cargarImagen(f){
+  try{return await createImageBitmap(f,{imageOrientation:'from-image'})}catch(e){}
+  return await new Promise((ok,mal)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=mal;i.src=URL.createObjectURL(f)});
+}
+async function achicar(img,c){
+  const e=Math.min(1,c.lado/Math.max(img.width,img.height));
+  const cv=document.createElement('canvas');cv.width=Math.round(img.width*e);cv.height=Math.round(img.height*e);
+  cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+  let q=c.q,b;
+  do{b=await new Promise(ok=>cv.toBlob(ok,'image/jpeg',q));q-=.07}while(b.size>c.max&&q>.12);
+  return b;
+}
+$('#fotoBtn').onclick=()=>$('#archivo').click();
+$('#archivo').onchange=async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  $('#hojaFoto').classList.add('ver');$('#opciones').textContent='preparando…';
+  const img=await cargarImagen(f);
+  const versiones=[];for(const c of CALIDADES)versiones.push(await achicar(img,c));
+  $('#vista').src=URL.createObjectURL(versiones[1]);
+  $('#opciones').innerHTML='';
+  versiones.forEach((b,i)=>{
+    const o=document.createElement('button');o.className='opcion';
+    const nv=(estado.presencia&&estado.presencia.turbo_posible)||0;
+    const tiempo=nv?`⚡ ${minSeg(segFoto(b.size,nv))} (señal fuerte) · si no, ${minSeg(segFoto(b.size))}`:minSeg(segFoto(b.size));
+    o.innerHTML=`<b>${CALIDADES[i].n}</b><span>${(b.size/1024).toFixed(1)} KB · ${tiempo}</span>`;
+    o.onmouseenter=()=>$('#vista').src=URL.createObjectURL(b);
+    o.onclick=async()=>{cerrar('hojaFoto');pegadoAbajo=true;await fetch('/api/foto',{method:'POST',headers:{'Content-Type':'image/jpeg'},body:b});setTimeout(sondear,300)};
+    $('#opciones').appendChild(o);
+  });
+};
+
+// ---- ajustes del aparato (con clave de administrador) ----
+let clave=localStorage.getItem('claveAdmin')||'';
+// ⚙: primero "Este aparato" (si puede ajustarse a sí mismo); la otra pestaña ajusta al otro por radio
+function abrirLocal(){cerrar('hojaPc');$('#hojaAjustes').classList.add('ver');entrarAjustes(true)}
+function abrirRemoto(){cerrar('hojaAjustes');$('#hojaPc').classList.add('ver');
+  if(window.Notification&&Notification.permission==='default')Notification.requestPermission()}
+$('#ajustesBtn').onclick=()=>{if(estado.local)abrirLocal();else abrirRemoto()};
+async function entrarAjustes(guardada){
+  const r=await fetch('/api/ajustes',{headers:{'X-Clave':clave||''}});
+  if(r.status!==200)return;
+  const a=await r.json();
+  $('#aSsid').value=a.ssid;$('#aClave').value=a.clave;$('#aBajo').value=a.bajo;$('#aAlto').value=a.alto;$('#aMin').value=a.min;$('#aGirada').checked=a.girada;$('#aPot').value=a.pot;
+  $('#aLat').value=(a.lat||150)/60;$('#vLat').textContent=$('#aLat').value;$('#aTurbo').checked=a.turbo!==false;$('#aOtro').value=a.otro||'';
+  for(const k of['Bajo','Alto','Min','Pot'])$('#v'+k).textContent=$('#a'+k).value;
+  const h=Math.floor(a.encendida_s/3600),m=Math.floor(a.encendida_s/60)%60;
+  $('#info').textContent=`Versión ${estado.version||''} · partición ${a.particion}\nEncendido hace ${h} h ${m} min\nGuardado: ${(a.flash_usado/1048576).toFixed(2)} de ${(a.flash_total/1048576).toFixed(1)} MB\nRAM libre ${(a.ram_libre/1024)|0} KB · PSRAM ${(a.psram_libre/1048576).toFixed(1)} MB`;
+}
+$('#aLat').oninput=()=>$('#vLat').textContent=$('#aLat').value;
+for(const k of['Bajo','Alto','Min','Pot']){$('#a'+k).oninput=()=>$('#v'+k).textContent=$('#a'+k).value;$('#p'+k).oninput=()=>$('#pv'+k).textContent=$('#p'+k).value}
+async function guardarAjustes(){
+  const p=new URLSearchParams({ssid:$('#aSsid').value,clave:$('#aClave').value,bajo:$('#aBajo').value,alto:$('#aAlto').value,min:$('#aMin').value,pot:$('#aPot').value,lat:Math.round($('#aLat').value*60),turbo:$('#aTurbo').checked?'1':'0',otro:$('#aOtro').value,girada:$('#aGirada').checked?'1':'0'});
+  const r=await fetch('/api/ajustes',{method:'POST',headers:{'X-Clave':clave},body:p.toString()});
+  const j=await r.json();alert(j.reinicia?'Guardado. Se reinicia: vuelve a conectarte a la red nueva.':'Guardado ✓');
+}
+function actualizar(){
+  const f=$('#aBin').files[0];if(!f){alert('Elige el archivo .bin');return}
+  if(!confirm('¿Actualizar el programa? Si algo sale mal, vuelve solo a la versión anterior.'))return;
+  const x=new XMLHttpRequest();x.open('POST','/api/ota');x.setRequestHeader('X-Clave',clave);
+  $('#barraOta').hidden=false;
+  x.upload.onprogress=e=>$('#barraOta i').style.width=(100*e.loaded/e.total)+'%';
+  x.onload=()=>{try{const j=JSON.parse(x.responseText);alert(j.ok?'Listo: se está reiniciando con la versión nueva.':'No se actualizó: '+j.motivo)}catch(e){alert('Respuesta rara: '+x.responseText)}};
+  x.onerror=()=>alert('Se cortó la conexión');
+  x.send(f);
+}
+async function reiniciar(){if(confirm('¿Reiniciar?'))await fetch('/api/reiniciar',{method:'POST',headers:{'X-Clave':clave}})}
+
+// ---- lado PC: el aparato de ella se controla por radio ----
+async function aparato(cmd){
+  $('#respuestas').textContent='→ '+cmd+' (esperando respuesta por radio…)';
+  await fetch('/api/aparato',{method:'POST',body:cmd});
+}
+function aplicarBrillo(){aparato('brillo bajo '+$('#pBajo').value);setTimeout(()=>aparato('brillo alto '+$('#pAlto').value),400);setTimeout(()=>aparato('minutos '+$('#pMin').value),800)}
+$('#pLat').oninput=()=>$('#pvLat').textContent=$('#pLat').value;
+async function aplicarLatido(){
+  const s=Math.round($('#pLat').value*60),tb=$('#pTurbo').checked;
+  aparato('latido '+s);setTimeout(()=>aparato('turbo '+(tb?'si':'no')),500);
+  await fetch('/api/ajustes_pc',{method:'POST',body:new URLSearchParams({latido:s,turbo:tb?'1':'0'}).toString()});
+}
+async function aplicarNombres(){
+  if($('#pOtro').value.trim())await fetch('/api/ajustes_pc',{method:'POST',body:new URLSearchParams({otro:$('#pOtro').value.trim()}).toString()});
+  if($('#pYo').value.trim())aparato('nombre '+$('#pYo').value.trim());
+}
+async function alternarAlcance(){await fetch('/api/alcance?accion='+(estado.alcance?'parar':'empezar'),{method:'POST'});setTimeout(sondear,300)}
+let pcAjustesPuestos=false;
+function pintarPc(){
+  for(const x of document.querySelectorAll('.nomOtro'))x.textContent=estado.otro||'mi amor';
+  const tl=$('#tabLocal');if(tl)tl.hidden=!estado.local;
+  if(modo!=='pc'&&!estado.remoto)return;
+  if(!pcAjustesPuestos&&estado.ajustes_pc){pcAjustesPuestos=true;const a=estado.ajustes_pc;
+    $('#pLat').value=a.latido_s/60;$('#pvLat').textContent=$('#pLat').value;$('#pTurbo').checked=a.turbo;$('#pOtro').value=a.otro}
+  const a=estado.alcance;
+  $('#alcanceBtn').textContent=a?'Detener prueba':'Empezar prueba';
+  if(a){const pct=a.enviados?Math.round(100*a.ok/a.enviados):0;
+    $('#alcanceDatos').textContent=`${a.ok}/${a.enviados} respondidos (${pct}%)\nseñal allá: ${a.ultimo_alla??'–'} dBm (promedio ${a.alla??'–'})\nseñal acá: ${a.ultimo_aca??'–'} dBm (promedio ${a.aca??'–'})\nida y vuelta: ${a.rtt??'–'} s · margen hasta −134 dBm: ${a.alla!=null?(a.alla+134):'–'} dB`}
+  if(estado.respuestas&&estado.respuestas.length)$('#respuestas').textContent=estado.respuestas.slice(-3).map(r=>'← '+r.texto).join('\n');
+}
+
+$('#lista').addEventListener('scroll',()=>{const l=$('#lista');pegadoAbajo=l.scrollHeight-l.scrollTop-l.clientHeight<60});
+$('#texto').value=localStorage.getItem('borrador')||'';
+$('#texto').addEventListener('input',()=>{localStorage.setItem('borrador',$('#texto').value);contar()});
+$('#texto').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!/Mobi/.test(navigator.userAgent)){e.preventDefault();enviar()}});
+$('#enviar').onclick=enviar;
+fetch('/api/hora?t='+Math.floor(Date.now()/1000),{method:'POST'});
+contar();
+sondear();
+if(location.hash==='#ajustes')setTimeout(()=>$('#ajustesBtn').click(),800);
+</script>
+</body>
+</html>

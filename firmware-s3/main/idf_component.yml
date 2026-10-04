@@ -1,0 +1,6 @@
+dependencies:
+  idf: ">=6.0"
+  espressif/usb_host_ch34x_vcp: "*"
+  espressif/usb_host_cdc_acm: "*"
+  espressif/esp_jpeg: "*"
+  joltwallet/littlefs: "*"
